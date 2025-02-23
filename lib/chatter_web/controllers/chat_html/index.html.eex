@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= get_csrf_token() %>">
+    <title>Live Chat</title>
+
+</head>
+<body>
+    <h1>Live Chat</h1>
+    <p>Welcome to the Chat Application.</p>
+
+    <ul id="messages"></ul>
+    <input type="text" id="message-input" placeholder="Type your message..." />
+    <button id="send-button">Send</button>
+</body>
+</html>
