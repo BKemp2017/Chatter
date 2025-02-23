@@ -1,0 +1,2 @@
+# Chatter
+Elixir Chat application
