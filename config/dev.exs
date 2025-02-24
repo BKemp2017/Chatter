@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :chatter, Chatter.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "",
   hostname: "localhost",
   database: "chatter_dev",
   stacktrace: true,
