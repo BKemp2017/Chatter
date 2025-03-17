@@ -1,5 +1,10 @@
 defmodule ChatterWeb.Router do
   use ChatterWeb, :router
+  use Pow.Phoenix.Router
+  use Pow.Extension.Phoenix.Router,
+    extensions: [PowResetPassword, PowEmailConfirmation]
+
+  import Phoenix.LiveDashboard.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -14,30 +19,30 @@ defmodule ChatterWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/" do
+    pipe_through :browser
+
+    # ✅ Custom Session Handling
+    post "/session", ChatterWeb.SessionController, :create
+    delete "/session", Pow.Phoenix.SessionController, :delete
+
+    # ✅ Pow Authentication Routes (AFTER custom session handling)
+    pow_routes()
+    pow_extension_routes()
+  end
+
   scope "/", ChatterWeb do
     pipe_through :browser
 
     get "/", PageController, :home
     get "/chat", ChatController, :index
+    get "/debug-auth", DebugAuthController, :show
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", ChatterWeb do
-  #   pipe_through :api
-  # end
-
-  # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:chatter, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
-    import Phoenix.LiveDashboard.Router
-
     scope "/dev" do
       pipe_through :browser
-      get "/", ChatterWeb.PageController, :home
+      get "/", PageController, :home
       get "/chat", ChatterWeb.ChatController, :index
 
       live_dashboard "/dashboard", metrics: ChatterWeb.Telemetry

@@ -1,10 +1,3 @@
-# This file is responsible for configuring your application
-# and its dependencies with the aid of the Config module.
-#
-# This configuration file is loaded before any dependency and
-# is restricted to this project.
-
-# General application configuration
 import Config
 
 config :chatter,
@@ -22,13 +15,6 @@ config :chatter, ChatterWeb.Endpoint,
   pubsub_server: Chatter.PubSub,
   live_view: [signing_salt: "LDSpC4M0"]
 
-# Configures the mailer
-#
-# By default it uses the "Local" adapter which stores the emails
-# locally. You can see the emails in your browser, at "/dev/mailbox".
-#
-# For production it's recommended to configure a different adapter
-# at the `config/runtime.exs`.
 config :chatter, Chatter.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure esbuild (the version is required)
@@ -60,6 +46,16 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :chatter, :pow,
+  web_module: ChatterWeb,
+  user: Chatter.Users.User,
+  repo: Chatter.Repo,
+  routes_backend: ChatterWeb.PowRoutes,
+  routes_after_sign_in: &ChatterWeb.PowRoutes.after_sign_in_path/1,
+  extensions: [PowResetPassword, PowEmailConfirmation],
+  controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks,
+  mailer_backend: ChatterWeb.Pow.Mailer
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
